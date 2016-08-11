@@ -27,7 +27,8 @@ node ("maven") {
   stage 'Results'
 
   /* Archive the build artifacts */
-  archive includes: 'target/*.hpi,target/*.jpi'
+  /* Archive the build artifacts */
+  step([$class: 'ArtifactArchiver', artifacts: 'target/*.hpi,target/*.jpi'])
 }
 
 void runParallelTests() {
