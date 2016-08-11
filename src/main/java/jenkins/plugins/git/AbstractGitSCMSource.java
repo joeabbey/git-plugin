@@ -1,4 +1,3 @@
-
 /*
  * The MIT License
  *
@@ -75,7 +74,6 @@ import org.jenkinsci.plugins.gitclient.GitClient;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -86,7 +84,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
@@ -98,7 +95,7 @@ public abstract class AbstractGitSCMSource extends SCMSource {
     /**
      * Keep one lock per cache directory. Lazy populated, but never purge, except on restart.
      */
-    private static final ConcurrentMap<String, Lock> cacheLocks = new ConcurrentHashMap<String, Lock>();
+    private static final ConcurrentMap<String, Lock> cacheLocks = new ConcurrentHashMap<>();
 
     private static final Logger LOGGER = Logger.getLogger(AbstractGitSCMSource.class.getName());
 
@@ -186,64 +183,6 @@ public abstract class AbstractGitSCMSource extends SCMSource {
         }
     }
 
-    private static void _close(@NonNull Object walk) {
-        java.lang.reflect.Method closeMethod;
-        try {
-            closeMethod = walk.getClass().getDeclaredMethod("close");
-        } catch (NoSuchMethodException ex) {
-            LOGGER.log(Level.SEVERE, "Exception finding walker close method: {0}", ex);
-            return;
-        } catch (SecurityException ex) {
-            LOGGER.log(Level.SEVERE, "Exception finding walker close method: {0}", ex);
-            return;
-        }
-        try {
-            closeMethod.invoke(walk);
-        } catch (IllegalAccessException ex) {
-            LOGGER.log(Level.SEVERE, "Exception calling walker close method: {0}", ex);
-        } catch (IllegalArgumentException ex) {
-            LOGGER.log(Level.SEVERE, "Exception calling walker close method: {0}", ex);
-        } catch (InvocationTargetException ex) {
-            LOGGER.log(Level.SEVERE, "Exception calling walker close method: {0}", ex);
-        }
-    }
-
-    /**
-     * Call release method on walk.  JGit 3 uses release(), JGit 4 uses close() to
-     * release resources.
-     *
-     * This method should be removed once the code depends on git client 2.0.0.
-     * @param walk object whose close or release method will be called
-     */
-    private static void _release(TreeWalk walk) throws IOException {
-        if (walk == null) {
-            return;
-        }
-        try {
-            walk.release(); // JGit 3
-        } catch (NoSuchMethodError noMethod) {
-            _close(walk);
-        }
-    }
-
-    /**
-     * Call release method on walk.  JGit 3 uses release(), JGit 4 uses close() to
-     * release resources.
-     *
-     * This method should be removed once the code depends on git client 2.0.0.
-     * @param walk object whose close or release method will be called
-     */
-    private void _release(RevWalk walk) {
-        if (walk == null) {
-            return;
-        }
-        try {
-            walk.release(); // JGit 3
-        } catch (NoSuchMethodError noMethod) {
-            _close(walk);
-        }
-    }
-
     @NonNull
     @Override
     protected void retrieve(@NonNull final SCMHeadObserver observer,
@@ -271,15 +210,12 @@ public abstract class AbstractGitSCMSource extends SCMSource {
             final Repository repository = client.getRepository();
             try {
                 client.prune(new RemoteConfig(repository.getConfig(), remoteName));
-            } catch (UnsupportedOperationException e) {
-                e.printStackTrace(listener.error("Could not prune stale remotes"));
-            } catch (URISyntaxException e) {
+            } catch (UnsupportedOperationException | URISyntaxException e) {
                 e.printStackTrace(listener.error("Could not prune stale remotes"));
             }
             listener.getLogger().println("Getting remote branches...");
             SCMSourceCriteria branchCriteria = getCriteria();
-            RevWalk walk = new RevWalk(repository);
-            try {
+            try (RevWalk walk = new RevWalk(repository)) {
                 walk.setRetainBody(false);
                 for (Branch b : client.getRemoteBranches()) {
                     if (!b.getName().startsWith(remoteName + "/")) {
@@ -307,11 +243,8 @@ public abstract class AbstractGitSCMSource extends SCMSource {
 
                             @Override
                             public boolean exists(@NonNull String path) throws IOException {
-                                TreeWalk tw = TreeWalk.forPath(repository, path, tree);
-                                try {
+                                try (TreeWalk tw = TreeWalk.forPath(repository, path, tree)) {
                                     return tw != null;
-                                } finally {
-                                    _release(tw);
                                 }
                             }
                         };
@@ -329,8 +262,6 @@ public abstract class AbstractGitSCMSource extends SCMSource {
                         return;
                     }
                 }
-            } finally {
-                _release(walk);
             }
 
             listener.getLogger().println("Done.");
@@ -393,7 +324,7 @@ public abstract class AbstractGitSCMSource extends SCMSource {
 
     protected List<UserRemoteConfig> getRemoteConfigs() {
         List<RefSpec> refSpecs = getRefSpecs();
-        List<UserRemoteConfig> result = new ArrayList<UserRemoteConfig>(refSpecs.size());
+        List<UserRemoteConfig> result = new ArrayList<>(refSpecs.size());
         String remote = getRemote();
         for (RefSpec refSpec : refSpecs) {
             result.add(new UserRemoteConfig(remote, getRemoteName(), refSpec.toString(), getCredentialsId()));

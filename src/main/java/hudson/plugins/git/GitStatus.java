@@ -117,7 +117,7 @@ public class GitStatus extends AbstractModelObject implements UnprotectedRootAct
         lastBuildParameters = null;
         lastStaticBuildParameters = null;
         URIish uri;
-        List<ParameterValue> buildParameters = new ArrayList<ParameterValue>();
+        List<ParameterValue> buildParameters = new ArrayList<>();
 
         try {
             uri = new URIish(url);
@@ -144,7 +144,7 @@ public class GitStatus extends AbstractModelObject implements UnprotectedRootAct
             branchesArray = branches.split(",");
         }
 
-        final List<ResponseContributor> contributors = new ArrayList<ResponseContributor>();
+        final List<ResponseContributor> contributors = new ArrayList<>();
         Jenkins jenkins = Jenkins.getInstance();
         if (jenkins == null) {
             return HttpResponses.error(SC_BAD_REQUEST, new Exception("Jenkins.getInstance() null for : " + url));
@@ -281,8 +281,8 @@ public class GitStatus extends AbstractModelObject implements UnprotectedRootAct
             }
 
             lastStaticBuildParameters = null;
-            List<ParameterValue> allBuildParameters = new ArrayList<ParameterValue>(buildParameters);
-            List<ResponseContributor> result = new ArrayList<ResponseContributor>();
+            List<ParameterValue> allBuildParameters = new ArrayList<>(buildParameters);
+            List<ResponseContributor> result = new ArrayList<>();
             // run in high privilege to see all the projects anonymous users don't see.
             // this is safe because when we actually schedule a build, it's a build that can
             // happen at some random time anyway.
@@ -428,10 +428,10 @@ public class GitStatus extends AbstractModelObject implements UnprotectedRootAct
 
             if (paramDefProp != null) {
                 List <ParameterDefinition> parameterDefinition = paramDefProp.getParameterDefinitions();
-                defValues = new ArrayList<ParameterValue>(parameterDefinition.size());
+                defValues = new ArrayList<>(parameterDefinition.size());
 
             } else {
-                defValues = new ArrayList<ParameterValue>();
+                defValues = new ArrayList<>();
                 return defValues;
             }
 

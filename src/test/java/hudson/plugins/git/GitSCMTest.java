@@ -346,7 +346,7 @@ public class GitSCMTest extends AbstractGitTestCase {
         final FreeStyleBuild firstBuild = build(p, Result.SUCCESS, commitFile1);
         final String branch1 = "Branch1";
         final String branch2 = "Branch2";
-        List<BranchSpec> branches = new ArrayList<BranchSpec>();
+        List<BranchSpec> branches = new ArrayList<>();
         branches.add(new BranchSpec("master"));
         branches.add(new BranchSpec(branch1));
         branches.add(new BranchSpec(branch2));
@@ -942,7 +942,7 @@ public class GitSCMTest extends AbstractGitTestCase {
         FreeStyleProject project = setupSimpleProject("master");
 
         TestGitRepo secondTestRepo = new TestGitRepo("second", tempFolder.newFolder(), listener);
-        List<UserRemoteConfig> remotes = new ArrayList<UserRemoteConfig>();
+        List<UserRemoteConfig> remotes = new ArrayList<>();
         remotes.addAll(testRepo.remoteConfigs());
         remotes.addAll(secondTestRepo.remoteConfigs());
 
@@ -1009,7 +1009,7 @@ public class GitSCMTest extends AbstractGitTestCase {
         FreeStyleProject project = setupSimpleProject("master");
 
         TestGitRepo secondTestRepo = new TestGitRepo("secondRepo", tempFolder.newFolder(), listener);
-        List<UserRemoteConfig> remotes = new ArrayList<UserRemoteConfig>();
+        List<UserRemoteConfig> remotes = new ArrayList<>();
         remotes.addAll(testRepo.remoteConfigs());
         remotes.addAll(secondTestRepo.remoteConfigs());
 
@@ -1328,7 +1328,7 @@ public class GitSCMTest extends AbstractGitTestCase {
     }
 
     private List<UserRemoteConfig> createRepoList(String url) {
-        List<UserRemoteConfig> repoList = new ArrayList<UserRemoteConfig>();
+        List<UserRemoteConfig> repoList = new ArrayList<>();
         repoList.add(new UserRemoteConfig(url, null, null, null));
         return repoList;
     }
@@ -1833,7 +1833,7 @@ public class GitSCMTest extends AbstractGitTestCase {
     @Test
 	public void testPolling_CanDoRemotePollingIfOneBranchButMultipleRepositories() throws Exception {
 		FreeStyleProject project = createFreeStyleProject();
-		List<UserRemoteConfig> remoteConfigs = new ArrayList<UserRemoteConfig>();
+		List<UserRemoteConfig> remoteConfigs = new ArrayList<>();
 		remoteConfigs.add(new UserRemoteConfig(testRepo.gitDir.getAbsolutePath(), "origin", "", null));
 		remoteConfigs.add(new UserRemoteConfig(testRepo.gitDir.getAbsolutePath(), "someOtherRepo", "", null));
 		GitSCM scm = new GitSCM(remoteConfigs,
@@ -2030,7 +2030,7 @@ public class GitSCMTest extends AbstractGitTestCase {
         /* This is the null that causes NPE */
         Branch branch = new Branch(null, sha1);
 
-        List<Branch> branchList = new ArrayList<Branch>();
+        List<Branch> branchList = new ArrayList<>();
         branchList.add(branch);
 
         Revision revision = new Revision(sha1, branchList);
@@ -2041,7 +2041,7 @@ public class GitSCMTest extends AbstractGitTestCase {
         Mockito.when(buildData.hasBeenReferenced(anyString())).thenReturn(true);
 
         /* List of build data that will be returned by the mocked BuildData */
-        List<BuildData> buildDataList = new ArrayList<BuildData>();
+        List<BuildData> buildDataList = new ArrayList<>();
         buildDataList.add(buildData);
 
         /* AbstractBuild mock which returns the buildDataList that contains a null branch name */
@@ -2065,7 +2065,7 @@ public class GitSCMTest extends AbstractGitTestCase {
        /* This is the null that causes NPE */
        Branch branch = new Branch("origin/master", sha1);
 
-       List<Branch> branchList = new ArrayList<Branch>();
+       List<Branch> branchList = new ArrayList<>();
        branchList.add(branch);
 
        Revision revision = new Revision(sha1, branchList);
@@ -2076,7 +2076,7 @@ public class GitSCMTest extends AbstractGitTestCase {
        Mockito.when(buildData.hasBeenReferenced(anyString())).thenReturn(true);
 
        /* List of build data that will be returned by the mocked BuildData */
-       List<BuildData> buildDataList = new ArrayList<BuildData>();
+       List<BuildData> buildDataList = new ArrayList<>();
        buildDataList.add(buildData);
 
        /* AbstractBuild mock which returns the buildDataList that contains a null branch name */
@@ -2106,7 +2106,7 @@ public class GitSCMTest extends AbstractGitTestCase {
        /* This is the null that causes NPE */
        Branch branch = new Branch("origin/master", sha1);
 
-       List<Branch> branchList = new ArrayList<Branch>();
+       List<Branch> branchList = new ArrayList<>();
        branchList.add(branch);
 
        Revision revision = new Revision(sha1, branchList);
@@ -2117,7 +2117,7 @@ public class GitSCMTest extends AbstractGitTestCase {
        Mockito.when(buildData.hasBeenReferenced(anyString())).thenReturn(true);
 
        /* List of build data that will be returned by the mocked BuildData */
-       List<BuildData> buildDataList = new ArrayList<BuildData>();
+       List<BuildData> buildDataList = new ArrayList<>();
        buildDataList.add(buildData);
 
        /* AbstractBuild mock which returns the buildDataList that contains a null branch name */
@@ -2147,7 +2147,7 @@ public class GitSCMTest extends AbstractGitTestCase {
        /* This is the null that causes NPE */
        Branch branch = new Branch("origin/master", sha1);
 
-       List<Branch> branchList = new ArrayList<Branch>();
+       List<Branch> branchList = new ArrayList<>();
        branchList.add(branch);
 
        Revision revision = new Revision(sha1, branchList);
@@ -2158,7 +2158,7 @@ public class GitSCMTest extends AbstractGitTestCase {
        Mockito.when(buildData.hasBeenReferenced(anyString())).thenReturn(true);
 
        /* List of build data that will be returned by the mocked BuildData */
-       List<BuildData> buildDataList = new ArrayList<BuildData>();
+       List<BuildData> buildDataList = new ArrayList<>();
        buildDataList.add(buildData);
 
        /* AbstractBuild mock which returns the buildDataList that contains a null branch name */
